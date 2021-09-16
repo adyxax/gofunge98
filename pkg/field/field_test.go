@@ -6,108 +6,117 @@ import (
 	"testing"
 	"testing/iotest"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestLoadFile(t *testing.T) {
 	// minimal b98 file
 	minimalField := Field{
-		firstLineIndex: 0,
-		length:         1,
+		x:  0,
+		y:  0,
+		lx: 1,
+		ly: 1,
 		lines: []Line{
 			Line{
-				firstColumnIndex: 0,
-				length:           1,
-				columns:          []byte{'@'},
+				x:       0,
+				l:       1,
+				columns: []int{'@'},
 			},
 		},
 	}
 	// hello b98 file
 	helloField := Field{
-		firstLineIndex: 0,
-		length:         1,
+		x:  0,
+		y:  0,
+		lx: 24,
+		ly: 1,
 		lines: []Line{
 			Line{
-				firstColumnIndex: 0,
-				length:           24,
-				columns:          []byte{'6', '4', '+', '"', '!', 'd', 'l', 'r', 'o', 'W', ' ', ',', 'o', 'l', 'l', 'e', 'H', '"', '>', ':', '#', ',', '_', '@'},
+				x:       0,
+				l:       24,
+				columns: []int{'6', '4', '+', '"', '!', 'd', 'l', 'r', 'o', 'W', ' ', ',', 'o', 'l', 'l', 'e', 'H', '"', '>', ':', '#', ',', '_', '@'},
 			},
 		},
 	}
 	// factorial b98 file
 	factorialField := Field{
-		firstLineIndex: 0,
-		length:         2,
+		x:  0,
+		y:  0,
+		lx: 15,
+		ly: 2,
 		lines: []Line{
 			Line{
-				firstColumnIndex: 0,
-				length:           15,
-				columns:          []byte{'&', '>', ':', '1', '-', ':', 'v', ' ', 'v', ' ', '*', '_', '$', '.', '@'},
+				x:       0,
+				l:       15,
+				columns: []int{'&', '>', ':', '1', '-', ':', 'v', ' ', 'v', ' ', '*', '_', '$', '.', '@'},
 			},
 			Line{
-				firstColumnIndex: 1,
-				length:           11,
-				columns:          []byte{'^', ' ', ' ', ' ', ' ', '_', '$', '>', '\\', ':', '^'},
+				x:       1,
+				l:       11,
+				columns: []int{'^', ' ', ' ', ' ', ' ', '_', '$', '>', '\\', ':', '^'},
 			},
 		},
 	}
 	// dna b98 file
 	dnaField := Field{
-		firstLineIndex: 0,
-		length:         8,
+		x:  0,
+		y:  0,
+		lx: 7,
+		ly: 8,
 		lines: []Line{
 			Line{
-				firstColumnIndex: 0,
-				length:           7,
-				columns:          []byte{'7', '^', 'D', 'N', '>', 'v', 'A'},
+				x:       0,
+				l:       7,
+				columns: []int{'7', '^', 'D', 'N', '>', 'v', 'A'},
 			},
 			Line{
-				firstColumnIndex: 0,
-				length:           7,
-				columns:          []byte{'v', '_', '#', 'v', '?', ' ', 'v'},
+				x:       0,
+				l:       7,
+				columns: []int{'v', '_', '#', 'v', '?', ' ', 'v'},
 			},
 			Line{
-				firstColumnIndex: 0,
-				length:           7,
-				columns:          []byte{'7', '^', '<', '"', '"', '"', '"'},
+				x:       0,
+				l:       7,
+				columns: []int{'7', '^', '<', '"', '"', '"', '"'},
 			},
 			Line{
-				firstColumnIndex: 0,
-				length:           7,
-				columns:          []byte{'3', ' ', ' ', 'A', 'C', 'G', 'T'},
+				x:       0,
+				l:       7,
+				columns: []int{'3', ' ', ' ', 'A', 'C', 'G', 'T'},
 			},
 			Line{
-				firstColumnIndex: 0,
-				length:           7,
-				columns:          []byte{'9', '0', '!', '"', '"', '"', '"'},
+				x:       0,
+				l:       7,
+				columns: []int{'9', '0', '!', '"', '"', '"', '"'},
 			},
 			Line{
-				firstColumnIndex: 0,
-				length:           7,
-				columns:          []byte{'4', '*', ':', '>', '>', '>', 'v'},
+				x:       0,
+				l:       7,
+				columns: []int{'4', '*', ':', '>', '>', '>', 'v'},
 			},
 			Line{
-				firstColumnIndex: 0,
-				length:           7,
-				columns:          []byte{'+', '8', '^', '-', '1', ',', '<'},
+				x:       0,
+				l:       7,
+				columns: []int{'+', '8', '^', '-', '1', ',', '<'},
 			},
 			Line{
-				firstColumnIndex: 0,
-				length:           7,
-				columns:          []byte{'>', ' ', ',', '+', ',', '@', ')'},
+				x:       0,
+				l:       7,
+				columns: []int{'>', ' ', ',', '+', ',', '@', ')'},
 			},
 		},
 	}
 	// \r\n file b98 file
 	rnField := Field{
-		firstLineIndex: 0,
-		length:         1,
+		x:  0,
+		y:  0,
+		lx: 24,
+		ly: 1,
 		lines: []Line{
 			Line{
-				firstColumnIndex: 0,
-				length:           24,
-				columns:          []byte{'6', '4', '+', '"', '!', 'd', 'l', 'r', 'o', 'W', ' ', ',', 'o', 'l', 'l', 'e', 'H', '"', '>', ':', '#', ',', '_', '@'},
+				x:       0,
+				l:       24,
+				columns: []int{'6', '4', '+', '"', '!', 'd', 'l', 'r', 'o', 'W', ' ', ',', 'o', 'l', 'l', 'e', 'H', '"', '>', ':', '#', ',', '_', '@'},
 			},
 		},
 	}
@@ -148,7 +157,7 @@ func TestLoadFile(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 			}
-			assert.Equal(t, tc.expected, valid, "Invalid value")
+			require.Equal(t, tc.expected, valid, "Invalid value")
 		})
 	}
 }
