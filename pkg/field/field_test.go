@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestLoadFile(t *testing.T) {
+func TestLoad(t *testing.T) {
 	// minimal b98 file
 	minimalField := Field{
 		x:  0,
@@ -149,7 +149,7 @@ func TestLoadFile(t *testing.T) {
 			} else {
 				fd = file
 			}
-			valid, err := LoadFile(fd)
+			valid, err := Load(fd)
 			if tc.expectedError != nil {
 				require.Error(t, err)
 				requireErrorTypeMatch(t, err, tc.expectedError)

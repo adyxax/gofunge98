@@ -32,7 +32,7 @@ func TestStep(t *testing.T) {
 			file, err := os.Open(tc.input)
 			require.NoError(t, err, "Failed to open file")
 			defer file.Close()
-			field, err := LoadFile(file)
+			field, err := Load(file)
 			x, y := field.Step(tc.x, tc.y, tc.dx, tc.dy)
 			require.NoError(t, err)
 			require.Equal(t, tc.ex, x, "Invalid x value")

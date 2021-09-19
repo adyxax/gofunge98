@@ -28,7 +28,7 @@ type Line struct {
 	columns []int
 }
 
-func LoadFile(fd io.Reader) (*Field, error) {
+func Load(fd io.Reader) (*Field, error) {
 	f := new(Field)
 	l := new(Line)
 	trailingSpaces := 0
