@@ -12,14 +12,14 @@ func TestNewPointer(t *testing.T) {
 	require.Equal(t, NewPointer(), &Pointer{delta: &Delta{1, 0}})
 }
 
-func TestForkPointer(t *testing.T) {
+func TestSplit(t *testing.T) {
 	file, err := os.Open("../field/test_data/hello.b98")
 	require.NoError(t, err, "Failed to open file")
 	defer file.Close()
 	f, err := field.Load(file)
 	require.NoError(t, err)
 	p := NewPointer()
-	p2 := p.ForkPointer()
+	p2 := p.Split()
 	// We check that p2 is a real copy
 	p.Step(*f)
 	p2.Step(*f)
