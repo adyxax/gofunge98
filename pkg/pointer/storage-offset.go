@@ -5,7 +5,7 @@ func (p Pointer) GetStorageOffset() (x, y int) {
 }
 
 func (p *Pointer) CalculateNewStorageOffset() {
-	p.sox, p.soy = p.x+p.delta.x, p.y+p.delta.y
+	p.sox, p.soy = p.x+p.dx, p.y+p.dy
 }
 
 func (p *Pointer) SetStorageOffset(x, y int) {

@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewPointer(t *testing.T) {
-	require.Equal(t, NewPointer(), &Pointer{delta: &Delta{1, 0}})
+	require.Equal(t, NewPointer(), &Pointer{dx: 1})
 }
 
 func TestSplit(t *testing.T) {
@@ -23,8 +23,8 @@ func TestSplit(t *testing.T) {
 	// We check that p2 is a real copy
 	p.Step(*f)
 	p2.Step(*f)
-	require.Equal(t, p, &Pointer{x: 1, y: 0, delta: &Delta{1, 0}})
-	require.Equal(t, p2, &Pointer{x: 1, y: 0, delta: &Delta{1, 0}})
+	require.Equal(t, p, &Pointer{x: 1, y: 0, dx: 1})
+	require.Equal(t, p2, &Pointer{x: 1, y: 0, dx: 1})
 }
 
 func TestStep(t *testing.T) { // Step is thoroughly tested in the field package
