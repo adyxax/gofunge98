@@ -17,6 +17,7 @@ func NewStackStack() *StackStack {
 }
 
 func (ss *StackStack) Begin(p *pointer.Pointer) {
+	ss.height++
 	soss := ss.head
 	n := soss.Pop()
 	np := n
