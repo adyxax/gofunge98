@@ -6,46 +6,37 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewStack(t *testing.T) {
-	require.Equal(t, NewStack(), &Stack{
-		size:   32,
-		height: 0,
-		data:   make([]int, 32),
-		next:   nil,
-	})
-}
-
 func TestClear(t *testing.T) {
 	s := NewStack()
 	s.Clear()
-	require.Equal(t, s.height, 0)
+	require.Equal(t, 0, s.height)
 }
 
 func TestDupicate(t *testing.T) {
 	s := NewStack()
 	s2 := NewStack()
 	s.Duplicate()
-	require.Equal(t, s.height, s2.height)
+	require.Equal(t, s2.height, s.height)
 	s.Push(12)
 	s.Duplicate()
 	s2.Push(12)
 	s2.Push(12)
-	require.Equal(t, s.height, s2.height)
-	require.Equal(t, s.data, s2.data)
+	require.Equal(t, s2.height, s.height)
+	require.Equal(t, s2.data, s.data)
 }
 
 func TestPop(t *testing.T) {
 	s := NewStack()
 	v := s.Pop()
-	require.Equal(t, v, 0)
+	require.Equal(t, 0, v)
 	s.Push(12)
 	s.Push(14)
 	v = s.Pop()
-	require.Equal(t, v, 14)
+	require.Equal(t, 14, v)
 	v = s.Pop()
-	require.Equal(t, v, 12)
+	require.Equal(t, 12, v)
 	v = s.Pop()
-	require.Equal(t, v, 0)
+	require.Equal(t, 0, v)
 }
 
 func TestPush(t *testing.T) {
@@ -53,9 +44,9 @@ func TestPush(t *testing.T) {
 	for i := 0; i < 32; i++ {
 		s.Push(i)
 	}
-	require.Equal(t, s.size, 32)
+	require.Equal(t, 32, s.size)
 	s.Push(-1)
-	require.Equal(t, s.size, 64)
+	require.Equal(t, 64, s.size)
 }
 
 func TestSwap(t *testing.T) {
@@ -64,14 +55,14 @@ func TestSwap(t *testing.T) {
 	s.Swap()
 	s2.Push(0)
 	s2.Push(0)
-	require.Equal(t, s, s2)
+	require.Equal(t, s2, s)
 	s.Clear()
 	s.Push(1)
 	s.Swap()
 	s2.Clear()
 	s2.Push(1)
 	s2.Push(0)
-	require.Equal(t, s, s2)
+	require.Equal(t, s2, s)
 	s.Clear()
 	s.Push(1)
 	s.Push(2)
@@ -79,5 +70,5 @@ func TestSwap(t *testing.T) {
 	s2.Push(2)
 	s2.Push(1)
 	s.Swap()
-	require.Equal(t, s, s2)
+	require.Equal(t, s2, s)
 }
