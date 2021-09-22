@@ -39,3 +39,14 @@ func TestStep(t *testing.T) { // Step is thoroughly tested in the field package
 	p.Step(*f)
 	require.Equal(t, defaultPointer, p)
 }
+
+func TestGet(t *testing.T) {
+	// File of one char
+	file, err := os.Open("../field/test_data/minimal.b98")
+	require.NoError(t, err, "Failed to open file")
+	defer file.Close()
+	f, err := field.Load(file)
+	p := NewPointer()
+	v := p.Get(*f)
+	require.Equal(t, int('@'), v)
+}

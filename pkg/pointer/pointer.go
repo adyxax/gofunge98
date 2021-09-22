@@ -12,6 +12,8 @@ type Pointer struct {
 	// The Storage offset
 	sox int
 	soy int
+	// The next element for the multi-"threaded" b98 interpreter
+	Next *Pointer
 }
 
 func NewPointer() *Pointer {
@@ -24,4 +26,8 @@ func (p Pointer) Split() *Pointer {
 
 func (p *Pointer) Step(f field.Field) {
 	p.x, p.y = f.Step(p.x, p.y, p.dx, p.dy)
+}
+
+func (p Pointer) Get(f field.Field) int {
+	return f.Get(p.x, p.y)
 }
