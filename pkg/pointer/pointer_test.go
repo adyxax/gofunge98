@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewPointer(t *testing.T) {
-	require.Equal(t, NewPointer(), &Pointer{dx: 1, ss: NewStackStack()})
+	require.Equal(t, NewPointer(), &Pointer{dx: 1, Ss: NewStackStack()})
 }
 
 func TestSplit(t *testing.T) {
@@ -23,8 +23,8 @@ func TestSplit(t *testing.T) {
 	// We check that p2 is a real copy
 	p.Step(*f)
 	p2.Step(*f)
-	require.Equal(t, &Pointer{x: 1, y: 0, dx: 1, ss: NewStackStack()}, p)
-	require.Equal(t, &Pointer{x: 1, y: 0, dx: 1, ss: NewStackStack()}, p2)
+	require.Equal(t, &Pointer{x: 1, y: 0, dx: 1, Ss: NewStackStack()}, p)
+	require.Equal(t, &Pointer{x: 1, y: 0, dx: 1, Ss: NewStackStack()}, p2)
 }
 
 func TestStep(t *testing.T) { // Step is thoroughly tested in the field package
@@ -48,6 +48,17 @@ func TestGet(t *testing.T) {
 	f, err := field.Load(file)
 	p := NewPointer()
 	v := p.Get(*f)
+	require.Equal(t, int('@'), v)
+}
+
+func TestStepAndGet(t *testing.T) {
+	// File of one char
+	file, err := os.Open("../field/test_data/minimal.b98")
+	require.NoError(t, err, "Failed to open file")
+	defer file.Close()
+	f, err := field.Load(file)
+	p := NewPointer()
+	v := p.StepAndGet(*f)
 	require.Equal(t, int('@'), v)
 }
 
@@ -93,8 +104,8 @@ func TestRedirect(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			p := NewPointer()
 			p.RedirectTo(3, 14)
-			p.ss.Push(2)
-			p.ss.Push(7)
+			p.Ss.Push(2)
+			p.Ss.Push(7)
 			v := p.Redirect(int(tc.input))
 			require.Equal(t, true, v)
 			require.Equal(t, tc.expectedDx, p.dx, "Invalid dx value")

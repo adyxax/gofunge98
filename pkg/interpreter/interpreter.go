@@ -1,8 +1,6 @@
 package interpreter
 
 import (
-	"log"
-
 	"git.adyxax.org/adyxax/gofunge/pkg/field"
 	"git.adyxax.org/adyxax/gofunge/pkg/pointer"
 )
@@ -16,31 +14,29 @@ func NewInterpreter(f *field.Field, p *pointer.Pointer) *Interpreter {
 	return &Interpreter{f: f, p: p}
 }
 
-func (i *Interpreter) Run() {
+func (i *Interpreter) Run() int {
 	for i.p != nil {
-		i.Step()
+		if v := i.Step(); v != nil {
+			return *v
+		}
 	}
+	return 0
 }
 
-func (i *Interpreter) Step() {
+func (i *Interpreter) Step() *int {
 	var prev *pointer.Pointer = nil
 	for p := i.p; p != nil; p = p.Next {
-		c := p.Get(*i.f)
-		switch c {
-		case '@':
+		done, v := p.Exec(i.f)
+		if v != nil {
+			return v
+		}
+		if done {
 			if prev == nil {
 				i.p = p.Next
 			} else {
 				prev.Next = p.Next
 			}
-			break
-		case '#':
-			p.Step(*i.f)
-		default:
-			if !p.Redirect(c) {
-				log.Fatalf("Non implemented instruction code %d : %c", c, c)
-			}
 		}
-		p.Step(*i.f)
 	}
+	return nil
 }

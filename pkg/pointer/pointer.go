@@ -17,13 +17,13 @@ type Pointer struct {
 	sox int
 	soy int
 	// The stack
-	ss *StackStack
+	Ss *StackStack
 	// The next element for the multi-"threaded" b98 interpreter
 	Next *Pointer
 }
 
 func NewPointer() *Pointer {
-	return &Pointer{dx: 1, ss: NewStackStack()}
+	return &Pointer{dx: 1, Ss: NewStackStack()}
 }
 
 func (p Pointer) Split() *Pointer {
@@ -36,6 +36,11 @@ func (p *Pointer) Step(f field.Field) {
 
 func (p Pointer) Get(f field.Field) int {
 	return f.Get(p.x, p.y)
+}
+
+func (p *Pointer) StepAndGet(f field.Field) int {
+	p.Step(f)
+	return p.Get(f)
 }
 
 func (p *Pointer) Set(x, y int) {
@@ -71,8 +76,8 @@ func (p *Pointer) Redirect(c int) bool {
 	case 'r':
 		p.Reverse()
 	case 'x':
-		dy := p.ss.Pop()
-		dx := p.ss.Pop()
+		dy := p.Ss.Pop()
+		dx := p.Ss.Pop()
 		p.RedirectTo(dx, dy)
 	default:
 		return false

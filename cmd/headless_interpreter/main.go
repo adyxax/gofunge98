@@ -38,5 +38,6 @@ func main() {
 		os.Exit(3)
 	}
 
-	interpreter.NewInterpreter(f, pointer.NewPointer()).Run()
+	v := interpreter.NewInterpreter(f, pointer.NewPointer()).Run()
+	os.Exit(v)
 }
