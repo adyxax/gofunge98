@@ -1,11 +1,10 @@
-package stack
+package pointer
 
 import (
 	"os"
 	"testing"
 
 	"git.adyxax.org/adyxax/gofunge/pkg/field"
-	"git.adyxax.org/adyxax/gofunge/pkg/pointer"
 	"github.com/stretchr/testify/require"
 )
 
@@ -17,7 +16,7 @@ func TestBegin(t *testing.T) {
 		expected.head.next.Push(0)
 		expected.height++
 		ss := NewStackStack()
-		p := pointer.NewPointer()
+		p := NewPointer()
 		ss.Begin(p)
 		require.Equal(t, expected, ss)
 		x, y := p.GetStorageOffset()
@@ -40,7 +39,7 @@ func TestBegin(t *testing.T) {
 		expected.head.next.Push(0)
 		expected.head.next.Push(0)
 		expected.height++
-		p := pointer.NewPointer()
+		p := NewPointer()
 		file, err := os.Open("../field/test_data/hello.b98")
 		require.NoError(t, err, "Failed to open file")
 		f, err := field.Load(file)
@@ -61,7 +60,7 @@ func TestBegin(t *testing.T) {
 		expected.head.next.Push(2)
 		expected.head.next.Push(3)
 		expected.height++
-		p := pointer.NewPointer()
+		p := NewPointer()
 		p.SetStorageOffset(2, 3)
 		file, err := os.Open("../field/test_data/hello.b98")
 		require.NoError(t, err, "Failed to open file")
@@ -87,7 +86,7 @@ func TestBegin(t *testing.T) {
 		expected.head.next.Push(36)
 		expected.head.next.Push(42)
 		expected.height++
-		p := pointer.NewPointer()
+		p := NewPointer()
 		p.SetStorageOffset(36, 42)
 		ss := NewStackStack()
 		ss.head.Push(7)
@@ -104,7 +103,7 @@ func TestBegin(t *testing.T) {
 func TestEnd(t *testing.T) {
 	t.Run("empty", func(t *testing.T) {
 		expected := NewStackStack()
-		p := pointer.NewPointer()
+		p := NewPointer()
 		ss := NewStackStack()
 		ss.Begin(p)
 		reflect := ss.End(p)
@@ -121,7 +120,7 @@ func TestEnd(t *testing.T) {
 		expected.head.Pop()
 		expected.head.Pop()
 		expected.head.Pop()
-		p := pointer.NewPointer()
+		p := NewPointer()
 		ss := NewStackStack()
 		ss.head.Push(7)
 		ss.head.Push(12)
@@ -139,7 +138,7 @@ func TestEnd(t *testing.T) {
 	})
 	t.Run("drop too much", func(t *testing.T) {
 		expected := NewStackStack()
-		p := pointer.NewPointer()
+		p := NewPointer()
 		ss := NewStackStack()
 		ss.Begin(p)
 		ss.head.Push(-3)
@@ -149,7 +148,7 @@ func TestEnd(t *testing.T) {
 	})
 	t.Run("reflect", func(t *testing.T) {
 		expected := NewStackStack()
-		p := pointer.NewPointer()
+		p := NewPointer()
 		ss := NewStackStack()
 		reflect := ss.End(p)
 		require.Equal(t, true, reflect)
@@ -164,7 +163,7 @@ func TestEnd(t *testing.T) {
 		expected.head.Push(14)
 		expected.head.Push(-2)
 		expected.head.Push(5)
-		p := pointer.NewPointer()
+		p := NewPointer()
 		ss := NewStackStack()
 		ss.head.size = 4
 		ss.head.data = make([]int, 4)
@@ -195,7 +194,7 @@ func TestUnder(t *testing.T) {
 		require.Equal(t, expected, ss)
 	})
 	t.Run("positive", func(t *testing.T) {
-		pe := pointer.NewPointer()
+		pe := NewPointer()
 		expected := NewStackStack()
 		expected.head.Push(1)
 		expected.head.Push(2)
@@ -209,7 +208,7 @@ func TestUnder(t *testing.T) {
 		expected.head.next.Pop()
 		expected.head.next.Pop()
 		expected.head.next.Pop()
-		p := pointer.NewPointer()
+		p := NewPointer()
 		ss := NewStackStack()
 		ss.head.Push(1)
 		ss.head.Push(2)
@@ -223,7 +222,7 @@ func TestUnder(t *testing.T) {
 		require.Equal(t, expected, ss)
 	})
 	t.Run("negative", func(t *testing.T) {
-		pe := pointer.NewPointer()
+		pe := NewPointer()
 		expected := NewStackStack()
 		expected.Begin(pe)
 		expected.head.next.Push(12)
@@ -237,7 +236,7 @@ func TestUnder(t *testing.T) {
 		expected.head.Pop()
 		expected.head.Pop()
 		expected.head.Pop()
-		p := pointer.NewPointer()
+		p := NewPointer()
 		ss := NewStackStack()
 		ss.Begin(p)
 		ss.head.Push(8)
@@ -248,4 +247,14 @@ func TestUnder(t *testing.T) {
 		require.Equal(t, false, reflect)
 		require.Equal(t, expected, ss)
 	})
+}
+
+func TestPushPop(t *testing.T) {
+	ss := NewStackStack()
+	ss.Push(12)
+	ss.Push(5)
+	v := ss.Pop()
+	require.Equal(t, 5, v)
+	v = ss.Pop()
+	require.Equal(t, 12, v)
 }

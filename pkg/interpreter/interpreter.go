@@ -25,7 +25,8 @@ func (i *Interpreter) Run() {
 func (i *Interpreter) Step() {
 	var prev *pointer.Pointer = nil
 	for p := i.p; p != nil; p = p.Next {
-		switch p.Get(*i.f) {
+		c := p.Get(*i.f)
+		switch c {
 		case '@':
 			if prev == nil {
 				i.p = p.Next
@@ -33,8 +34,13 @@ func (i *Interpreter) Step() {
 				prev.Next = p.Next
 			}
 			break
+		case '#':
+			p.Step(*i.f)
 		default:
-			log.Fatalf("Non implemented instruction code %d : %c", p.Get(*i.f), p.Get(*i.f))
+			if !p.Redirect(c) {
+				log.Fatalf("Non implemented instruction code %d : %c", c, c)
+			}
 		}
+		p.Step(*i.f)
 	}
 }

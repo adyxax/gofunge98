@@ -1,8 +1,4 @@
-package stack
-
-import (
-	"git.adyxax.org/adyxax/gofunge/pkg/pointer"
-)
+package pointer
 
 type StackStack struct {
 	head   *Stack
@@ -16,7 +12,7 @@ func NewStackStack() *StackStack {
 	}
 }
 
-func (ss *StackStack) Begin(p *pointer.Pointer) {
+func (ss *StackStack) Begin(p *Pointer) {
 	ss.height++
 	soss := ss.head
 	n := soss.Pop()
@@ -44,7 +40,7 @@ func (ss *StackStack) Begin(p *pointer.Pointer) {
 	p.CalculateNewStorageOffset()
 }
 
-func (ss *StackStack) End(p *pointer.Pointer) (reflect bool) {
+func (ss *StackStack) End(p *Pointer) (reflect bool) {
 	if ss.height == 1 {
 		return true
 	}
@@ -88,4 +84,12 @@ func (ss *StackStack) Under() (reflect bool) {
 		}
 	}
 	return false
+}
+
+func (ss StackStack) Pop() int {
+	return ss.head.Pop()
+}
+
+func (ss StackStack) Push(v int) {
+	ss.head.Push(v)
 }

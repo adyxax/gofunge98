@@ -1,6 +1,10 @@
 package pointer
 
-import "git.adyxax.org/adyxax/gofunge/pkg/field"
+import (
+	"math/rand"
+
+	"git.adyxax.org/adyxax/gofunge/pkg/field"
+)
 
 type Pointer struct {
 	// the position
@@ -12,12 +16,14 @@ type Pointer struct {
 	// The Storage offset
 	sox int
 	soy int
+	// The stack
+	ss *StackStack
 	// The next element for the multi-"threaded" b98 interpreter
 	Next *Pointer
 }
 
 func NewPointer() *Pointer {
-	return &Pointer{dx: 1}
+	return &Pointer{dx: 1, ss: NewStackStack()}
 }
 
 func (p Pointer) Split() *Pointer {
@@ -30,4 +36,46 @@ func (p *Pointer) Step(f field.Field) {
 
 func (p Pointer) Get(f field.Field) int {
 	return f.Get(p.x, p.y)
+}
+
+func (p *Pointer) Set(x, y int) {
+	p.x, p.y = x, y
+}
+
+func (p *Pointer) RedirectTo(dx, dy int) {
+	p.dx, p.dy = dx, dy
+}
+
+func (p *Pointer) Reverse() {
+	p.dx, p.dy = -p.dx, -p.dy
+}
+
+func (p *Pointer) Redirect(c int) bool {
+	switch c {
+	case '^':
+		p.dx, p.dy = 0, -1
+	case '>':
+		p.dx, p.dy = 1, 0
+	case 'v':
+		p.dx, p.dy = 0, 1
+	case '<':
+		p.dx, p.dy = -1, 0
+	case '?':
+		directions := []int{0, -1, 1, 0, 0, 1, -1, 0}
+		r := 2 * rand.Intn(4)
+		p.dx, p.dy = directions[r], directions[r+1]
+	case '[':
+		p.dx, p.dy = p.dy, -p.dx
+	case ']':
+		p.dx, p.dy = -p.dy, p.dx
+	case 'r':
+		p.Reverse()
+	case 'x':
+		dy := p.ss.Pop()
+		dx := p.ss.Pop()
+		p.RedirectTo(dx, dy)
+	default:
+		return false
+	}
+	return true
 }

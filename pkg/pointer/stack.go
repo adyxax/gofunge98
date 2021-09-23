@@ -1,4 +1,4 @@
-package stack
+package pointer
 
 type Stack struct {
 	size   int
