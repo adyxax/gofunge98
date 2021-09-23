@@ -6,6 +6,9 @@ import (
 	"git.adyxax.org/adyxax/gofunge/pkg/field"
 )
 
+type InputFunction func() int
+type OutputFunction func(v int)
+
 type Pointer struct {
 	// the position
 	x int
@@ -16,18 +19,33 @@ type Pointer struct {
 	// The Storage offset
 	sox int
 	soy int
+	// The stringmode flag
+	stringMode       bool
+	lastCharWasSpace bool
 	// The stack
-	Ss *StackStack
+	ss *StackStack
 	// The next element for the multi-"threaded" b98 interpreter
 	Next *Pointer
+	// The input/output functions
+	CharacterInput  InputFunction
+	DecimalInput    InputFunction
+	CharacterOutput OutputFunction
+	DecimalOutput   OutputFunction
 }
 
 func NewPointer() *Pointer {
-	return &Pointer{dx: 1, Ss: NewStackStack()}
+	return &Pointer{
+		dx:              1,
+		ss:              NewStackStack(),
+		CharacterInput:  DefaultCharacterInput,
+		DecimalInput:    DefaultDecimalInput,
+		CharacterOutput: DefaultCharacterOutput,
+		DecimalOutput:   DefaultDecimalOutput,
+	}
 }
 
 func (p Pointer) Split() *Pointer {
-	return &p // p is already a copy
+	return &p // p is already a copy TODO we need to duplicate the stack and handle the Next
 }
 
 func (p *Pointer) Step(f field.Field) {
@@ -76,8 +94,8 @@ func (p *Pointer) Redirect(c int) bool {
 	case 'r':
 		p.Reverse()
 	case 'x':
-		dy := p.Ss.Pop()
-		dx := p.Ss.Pop()
+		dy := p.ss.head.Pop()
+		dx := p.ss.head.Pop()
 		p.RedirectTo(dx, dy)
 	default:
 		return false

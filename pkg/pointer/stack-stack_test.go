@@ -248,13 +248,3 @@ func TestUnder(t *testing.T) {
 		require.Equal(t, expected, ss)
 	})
 }
-
-func TestPushPop(t *testing.T) {
-	ss := NewStackStack()
-	ss.Push(12)
-	ss.Push(5)
-	v := ss.Pop()
-	require.Equal(t, 5, v)
-	v = ss.Pop()
-	require.Equal(t, 12, v)
-}

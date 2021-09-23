@@ -16,14 +16,14 @@ func NewInterpreter(f *field.Field, p *pointer.Pointer) *Interpreter {
 
 func (i *Interpreter) Run() int {
 	for i.p != nil {
-		if v := i.Step(); v != nil {
+		if v := i.step(); v != nil {
 			return *v
 		}
 	}
 	return 0
 }
 
-func (i *Interpreter) Step() *int {
+func (i *Interpreter) step() *int {
 	var prev *pointer.Pointer = nil
 	for p := i.p; p != nil; p = p.Next {
 		done, v := p.Exec(i.f)

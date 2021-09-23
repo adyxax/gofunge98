@@ -85,11 +85,3 @@ func (ss *StackStack) Under() (reflect bool) {
 	}
 	return false
 }
-
-func (ss StackStack) Pop() int {
-	return ss.head.Pop()
-}
-
-func (ss StackStack) Push(v int) {
-	ss.head.Push(v)
-}

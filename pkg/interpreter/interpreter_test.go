@@ -38,7 +38,7 @@ func TestStep(t *testing.T) {
 			if tc.pointer == nil {
 				tc.pointer = pointer.NewPointer()
 			}
-			NewInterpreter(f, tc.pointer).Step()
+			NewInterpreter(f, tc.pointer).step()
 			if tc.expectedField != nil {
 				require.Equal(t, tc.expectedField, f)
 			}

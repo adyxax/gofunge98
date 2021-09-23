@@ -8,10 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewPointer(t *testing.T) {
-	require.Equal(t, NewPointer(), &Pointer{dx: 1, Ss: NewStackStack()})
-}
-
 func TestSplit(t *testing.T) {
 	file, err := os.Open("../field/test_data/hello.b98")
 	require.NoError(t, err, "Failed to open file")
@@ -23,12 +19,11 @@ func TestSplit(t *testing.T) {
 	// We check that p2 is a real copy
 	p.Step(*f)
 	p2.Step(*f)
-	require.Equal(t, &Pointer{x: 1, y: 0, dx: 1, Ss: NewStackStack()}, p)
-	require.Equal(t, &Pointer{x: 1, y: 0, dx: 1, Ss: NewStackStack()}, p2)
+	require.Equal(t, 1, p.x)
+	require.Equal(t, 0, p.y)
 }
 
 func TestStep(t *testing.T) { // Step is thoroughly tested in the field package
-	defaultPointer := NewPointer()
 	// File of one char
 	file, err := os.Open("../field/test_data/minimal.b98")
 	require.NoError(t, err, "Failed to open file")
@@ -37,7 +32,8 @@ func TestStep(t *testing.T) { // Step is thoroughly tested in the field package
 	require.NoError(t, err)
 	p := NewPointer()
 	p.Step(*f)
-	require.Equal(t, defaultPointer, p)
+	require.Equal(t, 0, p.x)
+	require.Equal(t, 0, p.y)
 }
 
 func TestGet(t *testing.T) {
@@ -104,8 +100,8 @@ func TestRedirect(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			p := NewPointer()
 			p.RedirectTo(3, 14)
-			p.Ss.Push(2)
-			p.Ss.Push(7)
+			p.ss.head.Push(2)
+			p.ss.head.Push(7)
 			v := p.Redirect(int(tc.input))
 			require.Equal(t, true, v)
 			require.Equal(t, tc.expectedDx, p.dx, "Invalid dx value")
