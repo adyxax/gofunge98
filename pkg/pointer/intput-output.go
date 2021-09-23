@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"github.com/pkg/term"
 )
 
 var defaultInputLastChar *int = nil
@@ -16,13 +14,6 @@ func DefaultCharacterInput() int {
 		defaultInputLastChar = nil
 		return c
 	}
-	t, err := term.Open("/dev/stdin")
-	if err != nil {
-		log.Fatalf("Could not open stdin: %+v", err)
-	}
-	defer t.Close()
-	defer t.Restore()
-	term.RawMode(t)
 	b := make([]byte, 1)
 	i, err := os.Stdin.Read(b)
 	if err != nil {

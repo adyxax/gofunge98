@@ -329,3 +329,9 @@ func TestGetAndSetOnEmptyLines(t *testing.T) {
 	field.Set(0, -1, 'c')
 	require.Equal(t, &f, field)
 }
+
+func TestDump(t *testing.T) {
+	// nothing to test really
+	f := Field{}
+	f.Dump()
+}

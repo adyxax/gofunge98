@@ -23,6 +23,9 @@ func (s *Stack) Clear() {
 func (s *Stack) Duplicate() {
 	if s.height > 0 {
 		s.Push(s.data[s.height-1])
+	} else {
+		s.Push(0)
+		s.Push(0)
 	}
 }
 

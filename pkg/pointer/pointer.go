@@ -31,6 +31,8 @@ type Pointer struct {
 	DecimalInput    InputFunction
 	CharacterOutput OutputFunction
 	DecimalOutput   OutputFunction
+	// command line arguments
+	Argv []string
 }
 
 func NewPointer() *Pointer {

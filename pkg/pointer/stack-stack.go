@@ -21,18 +21,27 @@ func (ss *StackStack) Begin(p *Pointer) {
 		np = -np
 	}
 	toss := &Stack{
-		size:   np,
-		height: np,
-		data:   make([]int, np),
-		next:   soss,
+		size: np,
+		data: make([]int, np),
+		next: soss,
 	}
 	ss.head = toss
-	max := n - soss.height
-	if max < 0 {
-		max = 0
-	}
-	for i := n - 1; i >= max; i-- {
-		toss.data[i] = soss.data[soss.height-n+i]
+	if n > 0 {
+		toss.height = n
+		elts := soss.height - n
+		if elts < 0 {
+			elts = soss.height
+		} else {
+			elts = n
+		}
+		for i := 1; i <= elts; i++ {
+			toss.data[toss.height-i] = soss.data[soss.height-i]
+		}
+		soss.height -= elts
+	} else if n < 0 {
+		for i := 0; i < np; i++ {
+			soss.Push(0)
+		}
 	}
 	x, y := p.GetStorageOffset()
 	soss.Push(x)
@@ -50,6 +59,12 @@ func (ss *StackStack) End(p *Pointer) (reflect bool) {
 	x := soss.Pop()
 	p.SetStorageOffset(x, y)
 	if n > 0 {
+		if n > ss.head.height {
+			for i := n; i > ss.head.height; i-- {
+				soss.Push(0)
+			}
+			n = ss.head.height
+		}
 		soss.height += n
 		if soss.size < soss.height {
 			soss.data = append(soss.data, make([]int, soss.height-soss.size)...)
@@ -58,7 +73,7 @@ func (ss *StackStack) End(p *Pointer) (reflect bool) {
 		for i := n; i > 0; i-- {
 			soss.data[soss.height-i] = ss.head.data[ss.head.height-i]
 		}
-	} else {
+	} else if n < 0 {
 		soss.height += n
 		if soss.height < 0 {
 			soss.height = 0

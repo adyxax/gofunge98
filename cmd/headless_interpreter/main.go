@@ -37,7 +37,8 @@ func main() {
 		fmt.Printf("Failed to load file %s : %+v", *filename, err)
 		os.Exit(3)
 	}
-
-	v := interpreter.NewInterpreter(f, pointer.NewPointer()).Run()
+	p := pointer.NewPointer()
+	p.Argv = []string{*filename}
+	v := interpreter.NewInterpreter(f, p).Run()
 	os.Exit(v)
 }

@@ -96,3 +96,7 @@ func (f *Field) Set(x, y, v int) {
 		}
 	}
 }
+
+func (f Field) Dump() (int, int, int, int) {
+	return f.x, f.y, f.lx, f.ly
+}
