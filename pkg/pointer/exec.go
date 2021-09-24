@@ -6,7 +6,7 @@ import (
 	"time"
 	"unsafe"
 
-	"git.adyxax.org/adyxax/gofunge/pkg/field"
+	"git.adyxax.org/adyxax/gofunge98/pkg/field"
 )
 
 func (p *Pointer) Exec(f *field.Field) (done bool, returnValue *int) {

@@ -1,4 +1,4 @@
-module git.adyxax.org/adyxax/gofunge
+module git.adyxax.org/adyxax/gofunge98
 
 go 1.17
 

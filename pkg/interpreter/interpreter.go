@@ -1,8 +1,8 @@
 package interpreter
 
 import (
-	"git.adyxax.org/adyxax/gofunge/pkg/field"
-	"git.adyxax.org/adyxax/gofunge/pkg/pointer"
+	"git.adyxax.org/adyxax/gofunge98/pkg/field"
+	"git.adyxax.org/adyxax/gofunge98/pkg/pointer"
 )
 
 type Interpreter struct {

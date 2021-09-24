@@ -3,7 +3,7 @@ package pointer
 import (
 	"math/rand"
 
-	"git.adyxax.org/adyxax/gofunge/pkg/field"
+	"git.adyxax.org/adyxax/gofunge98/pkg/field"
 )
 
 type InputFunction func() int

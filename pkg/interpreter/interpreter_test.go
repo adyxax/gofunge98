@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
-	"git.adyxax.org/adyxax/gofunge/pkg/field"
-	"git.adyxax.org/adyxax/gofunge/pkg/pointer"
+	"git.adyxax.org/adyxax/gofunge98/pkg/field"
+	"git.adyxax.org/adyxax/gofunge98/pkg/pointer"
 	"github.com/stretchr/testify/require"
 )
 
