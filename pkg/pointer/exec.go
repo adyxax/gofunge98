@@ -3,6 +3,7 @@ package pointer
 import (
 	"log"
 	"os"
+	"strings"
 	"time"
 	"unsafe"
 
@@ -189,15 +190,6 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 		p.ss.head.Push(p.CharacterInput())
 	case 'y':
 		n := p.ss.head.Pop()
-		if n > 22+p.ss.height {
-			n = n - 20
-			if p.ss.head.height <= n {
-				p.ss.head.Push(0)
-			} else {
-				p.ss.head.Push(p.ss.head.data[p.ss.head.height-n])
-			}
-			return
-		}
 		now := time.Now()
 		x, y, lx, ly := f.Dump()
 		const uintSize = 32 << (^uint(0) >> 32 & 1) // 32 or 64
@@ -207,95 +199,95 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 			heights[i] = s.height
 			s = s.next
 		}
-		if n <= 0 {
-			for _, e := range os.Environ() {
-				p.ss.head.Push(0)
-				for i := len(e) - 1; i >= 0; i-- {
-					p.ss.head.Push(int(e[i]))
-				}
+		// 20
+		for _, e := range os.Environ() {
+			vars := strings.SplitN(e, "=", 2)
+			if vars[0] != "LC_ALL" && vars[0] != "PWD" && vars[0] != "PATH" && vars[0] != "DISPLAY" && vars[0] != "USER" && vars[0] != "TERM" && vars[0] != "LANG" && vars[0] != "HOME" && vars[0] != "EDITOR" && vars[0] != "SHELL" {
+				continue
+			}
+			p.ss.head.Push(0)
+			for i := len(e) - 1; i >= 0; i-- {
+				p.ss.head.Push(int(e[i]))
 			}
 		}
-		if n <= 0 {
+		// 19
+		p.ss.head.Push(0)
+		p.ss.head.Push(0)
+		for i := len(p.Argv) - 1; i >= 0; i-- {
 			p.ss.head.Push(0)
-			p.ss.head.Push(0)
-			for i := len(p.Argv) - 1; i >= 0; i-- {
-				p.ss.head.Push(0)
-				for j := len(p.Argv[i]) - 1; j >= 0; j-- {
-					p.ss.head.Push(int(p.Argv[i][j]))
-				}
+			for j := len(p.Argv[i]) - 1; j >= 0; j-- {
+				p.ss.head.Push(int(p.Argv[i][j]))
 			}
 		}
-		if (n > 22 && n <= 22+p.ss.height) || n <= 0 {
-			for i := 0; i < len(heights); i++ {
-				p.ss.head.Push(heights[i])
+		// 18
+		for i := 0; i < len(heights); i++ {
+			p.ss.head.Push(heights[i])
+		}
+		// 17
+		p.ss.head.Push(p.ss.height)
+		// 16
+		p.ss.head.Push((now.Hour() * 256 * 256) + (now.Minute() * 256) + now.Second())
+		// 15
+		p.ss.head.Push(((now.Year() - 1900) * 256 * 256) + (int(now.Month()) * 256) + now.Day())
+		// 14
+		p.ss.head.Push(lx + x)
+		p.ss.head.Push(ly + y)
+		// 13
+		p.ss.head.Push(x)
+		p.ss.head.Push(y)
+		// 12
+		p.ss.head.Push(p.sox)
+		p.ss.head.Push(p.soy)
+		// 11
+		p.ss.head.Push(p.dx)
+		p.ss.head.Push(p.dy)
+		// 10
+		p.ss.head.Push(p.x)
+		p.ss.head.Push(p.y)
+		// 9
+		p.ss.head.Push(0)
+		// 8
+		p.ss.head.Push(*((*int)(unsafe.Pointer(p))))
+		// 7
+		p.ss.head.Push(2)
+		// 6
+		p.ss.head.Push('/')
+		// 5
+		p.ss.head.Push(0) // TODO update when implementing =
+		// 4
+		p.ss.head.Push(1)
+		// 3
+		p.ss.head.Push(1048576)
+		// 2
+		p.ss.head.Push(uintSize / 8)
+		// 1
+		p.ss.head.Push(0b00000) // TODO update when implementing t, i, o and =
+		if n > 0 {
+			if n > p.ss.head.height {
+				p.ss.head.height = 1
+				p.ss.head.data[0] = 0
+			} else {
+				v := p.ss.head.data[p.ss.head.height-n]
+				p.ss.head.height = heights[0]
+				p.ss.head.Push(v)
 			}
 		}
-		if n == 22 || n <= 0 {
-			p.ss.head.Push(p.ss.height)
+	case '(':
+		n := p.ss.head.Pop()
+		v := 0
+		for i := 0; i < n; i++ {
+			v = v*256 + p.ss.head.Pop()
 		}
-		if n == 21 || n <= 0 {
-			p.ss.head.Push((now.Hour() * 256 * 256) + (now.Minute() * 256) + now.Second())
+		// No fingerprints supported
+		p.Reverse()
+	case ')':
+		n := p.ss.head.Pop()
+		v := 0
+		for i := 0; i < n; i++ {
+			v = v*256 + p.ss.head.Pop()
 		}
-		if n == 20 || n <= 0 {
-			p.ss.head.Push(((now.Year() - 1900) * 256 * 256) + (int(now.Month()) * 256) + now.Day())
-		}
-		if n == 19 || n <= 0 {
-			p.ss.head.Push(lx + x)
-		}
-		if n == 18 || n <= 0 {
-			p.ss.head.Push(ly + y)
-		}
-		if n == 17 || n <= 0 {
-			p.ss.head.Push(x)
-		}
-		if n == 16 || n <= 0 {
-			p.ss.head.Push(y)
-		}
-		if n == 15 || n <= 0 {
-			p.ss.head.Push(p.sox)
-		}
-		if n == 14 || n <= 0 {
-			p.ss.head.Push(p.soy)
-		}
-		if n == 13 || n <= 0 {
-			p.ss.head.Push(p.dx)
-		}
-		if n == 12 || n <= 0 {
-			p.ss.head.Push(p.dy)
-		}
-		if n == 11 || n <= 0 {
-			p.ss.head.Push(p.x)
-		}
-		if n == 10 || n <= 0 {
-			p.ss.head.Push(p.y)
-		}
-		if n == 9 || n <= 0 {
-			p.ss.head.Push(0)
-		}
-		if n == 8 || n <= 0 {
-			p.ss.head.Push(*((*int)(unsafe.Pointer(p))))
-		}
-		if n == 7 || n <= 0 {
-			p.ss.head.Push(2)
-		}
-		if n == 6 || n <= 0 {
-			p.ss.head.Push('/')
-		}
-		if n == 5 || n <= 0 {
-			p.ss.head.Push(0) // TODO update when implementing =
-		}
-		if n == 4 || n <= 0 {
-			p.ss.head.Push(1)
-		}
-		if n == 3 || n <= 0 {
-			p.ss.head.Push(1048576)
-		}
-		if n == 2 || n <= 0 {
-			p.ss.head.Push(uintSize / 8)
-		}
-		if n == 1 || n <= 0 {
-			p.ss.head.Push(0b00000) // TODO update when implementing t, i, o and =
-		}
+		// No fingerprints supported
+		p.Reverse()
 	case 'i':
 		log.Fatalf("Non implemented instruction code %d : %c", c, c)
 	case 'o':
@@ -304,6 +296,9 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 		log.Fatalf("Non implemented instruction code %d : %c", c, c)
 	case 't':
 		log.Fatalf("Non implemented instruction code %d : %c", c, c)
+	case 12:
+		// Trifunge function that resets in befunge
+		p.x, p.y = 0, 0
 	default:
 		handled = false
 	}

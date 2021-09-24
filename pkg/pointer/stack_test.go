@@ -13,16 +13,17 @@ func TestClear(t *testing.T) {
 }
 
 func TestDupicate(t *testing.T) {
+	expected := NewStack()
+	expected.height = 2
 	s := NewStack()
-	s2 := NewStack()
 	s.Duplicate()
-	require.Equal(t, s2.height, s.height)
+	require.Equal(t, expected.height, s.height)
 	s.Push(12)
 	s.Duplicate()
-	s2.Push(12)
-	s2.Push(12)
-	require.Equal(t, s2.height, s.height)
-	require.Equal(t, s2.data, s.data)
+	expected.Push(12)
+	expected.Push(12)
+	require.Equal(t, expected.height, s.height)
+	require.Equal(t, expected.data, s.data)
 }
 
 func TestPop(t *testing.T) {
