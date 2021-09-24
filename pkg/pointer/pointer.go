@@ -2,9 +2,12 @@ package pointer
 
 import (
 	"math/rand"
+	"time"
 
 	"git.adyxax.org/adyxax/gofunge98/pkg/field"
 )
+
+var myRand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 type InputFunction func() int
 type OutputFunction func(v int)
@@ -87,7 +90,7 @@ func (p *Pointer) Redirect(c int) bool {
 		p.dx, p.dy = -1, 0
 	case '?':
 		directions := []int{0, -1, 1, 0, 0, 1, -1, 0}
-		r := 2 * rand.Intn(4)
+		r := 2 * myRand.Intn(4)
 		p.dx, p.dy = directions[r], directions[r+1]
 	case '[':
 		p.dx, p.dy = p.dy, -p.dx

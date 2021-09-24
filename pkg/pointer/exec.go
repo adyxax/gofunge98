@@ -230,8 +230,8 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 		// 15
 		p.ss.head.Push(((now.Year() - 1900) * 256 * 256) + (int(now.Month()) * 256) + now.Day())
 		// 14
-		p.ss.head.Push(lx + x)
-		p.ss.head.Push(ly + y)
+		p.ss.head.Push(lx + x + 1)
+		p.ss.head.Push(ly + y + 1)
 		// 13
 		p.ss.head.Push(x)
 		p.ss.head.Push(y)
