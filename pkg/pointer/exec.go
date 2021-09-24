@@ -296,9 +296,6 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 		log.Fatalf("Non implemented instruction code %d : %c", c, c)
 	case 't':
 		log.Fatalf("Non implemented instruction code %d : %c", c, c)
-	case 12:
-		// Trifunge function that resets in befunge
-		p.x, p.y = 0, 0
 	default:
 		handled = false
 	}

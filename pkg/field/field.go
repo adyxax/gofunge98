@@ -52,6 +52,9 @@ func Load(fd io.Reader) (*Field, error) {
 			}
 		} else {
 			for i := 0; i < n; i++ {
+				if data[i] == '' {
+					continue
+				}
 				if data[i] == '\n' || data[i] == '\r' {
 					if f.ly == 0 && l.l == 0 {
 						return nil, newDecodeError("No instruction on the first line of the file produces an unusable program in Befunge98")
