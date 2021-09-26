@@ -41,8 +41,8 @@ func Load(fd io.Reader) (*Field, error) {
 				}
 				if l.l > 0 {
 					f.ly++
-					if f.lx < l.l {
-						f.lx = l.l
+					if f.lx-f.x < l.l-l.x {
+						f.lx = l.l - l.x + f.x
 					}
 					f.lines = append(f.lines, *l)
 				}

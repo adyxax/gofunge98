@@ -15,6 +15,10 @@ func (f Field) isIn(x, y int) bool {
 }
 
 func (f *Field) Set(x, y, v int) {
+	if v == ' ' {
+		f.Blank(x, y)
+		return
+	}
 	if y >= f.y {
 		if y < f.y+f.ly {
 			l := &f.lines[y-f.y]
@@ -29,13 +33,13 @@ func (f *Field) Set(x, y, v int) {
 					l.columns[x-l.x] = v
 				} else {
 					// append columns
-					newL := l.l + x - l.x
+					newL := x - l.x + 1
 					for i := l.l; i < newL-1; i++ {
 						l.columns = append(l.columns, ' ')
 					}
 					l.columns = append(l.columns, v)
 					l.l = newL
-					if f.lx < l.l-l.x {
+					if f.lx-f.x < l.l-l.x {
 						f.lx = l.l - l.x
 					}
 				}
@@ -44,18 +48,18 @@ func (f *Field) Set(x, y, v int) {
 				newL := l.l + l.x - x
 				c := make([]int, newL)
 				c[0] = v
-				for i := 0; i < l.x-x; i++ {
-					c[i+1] = ' '
+				for i := 1; i < l.x-x; i++ {
+					c[i] = ' '
 				}
-				for j := 0; j < l.l; j++ {
-					c[j+l.x-x] = l.columns[j]
+				for i := l.x - x; i < newL; i++ {
+					c[i] = l.columns[i-l.x+x]
 				}
 				l.columns = c
 				l.x = x
 				l.l = newL
 				if f.x > x {
+					f.lx = f.lx + f.x - x
 					f.x = x
-					f.lx = newL
 				}
 			}
 		} else {
@@ -67,9 +71,10 @@ func (f *Field) Set(x, y, v int) {
 			f.lines = append(f.lines, Line{x: x, l: 1, columns: []int{v}})
 			f.ly = newLy
 			if f.x > x {
-				f.lx += f.x - x
+				f.lx = f.lx + f.x - x
 				f.x = x
-			} else if f.lx-f.x < x {
+			}
+			if f.lx-f.x < x {
 				f.lx = x - f.x
 			}
 		}
@@ -77,21 +82,18 @@ func (f *Field) Set(x, y, v int) {
 		// prepend lines
 		newLy := f.ly + f.y - y
 		lines := make([]Line, newLy)
-		lines[0] = Line{
-			x:       x,
-			l:       1,
-			columns: []int{v},
-		}
-		for j := 0; j < f.ly; j++ {
-			lines[j+f.y-y] = f.lines[j]
+		lines[0] = Line{x: x, l: 1, columns: []int{v}}
+		for j := f.y - y; j < newLy; j++ {
+			lines[j] = f.lines[j-f.y+y]
 		}
 		f.lines = lines
 		f.y = y
 		f.ly = newLy
 		if f.x > x {
-			f.lx += f.x - x
+			f.lx = f.lx + f.x - x
 			f.x = x
-		} else if f.lx-f.x < x {
+		}
+		if f.lx-f.x < x {
 			f.lx = x - f.x + 1
 		}
 	}
