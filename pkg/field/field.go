@@ -29,23 +29,16 @@ type Line struct {
 }
 
 func Load(fd io.Reader) (*Field, error) {
-	f := new(Field)
-	l := new(Line)
-	trailingSpaces := 0
+	f := Field{
+		lx:    1,
+		ly:    1,
+		lines: []Line{Line{l: 1, columns: []int{'>'}}},
+	}
+	var x, y int
 	for {
 		data := make([]byte, 4096)
 		if n, errRead := fd.Read(data); errRead != nil {
 			if errRead == io.EOF {
-				if f.ly == 0 && l.l == 0 {
-					return nil, newDecodeError("No instruction on the first line of the file produces an unusable program in Befunge98")
-				}
-				if l.l > 0 {
-					f.ly++
-					if f.lx-f.x < l.l-l.x {
-						f.lx = l.l - l.x + f.x
-					}
-					f.lines = append(f.lines, *l)
-				}
 				break
 			} else {
 				return nil, newReadError(errRead)
@@ -56,37 +49,20 @@ func Load(fd io.Reader) (*Field, error) {
 					continue
 				}
 				if data[i] == '\n' || data[i] == '\r' {
-					if f.ly == 0 && l.l == 0 {
-						return nil, newDecodeError("No instruction on the first line of the file produces an unusable program in Befunge98")
-					}
-					f.ly++
-					if f.lx < l.l {
-						f.lx = l.l
-					}
-					f.lines = append(f.lines, *l)
-					l = new(Line)
-					trailingSpaces = 0
+					x = 0
+					y++
 					if i+1 < n && data[i] == '\r' && data[i+1] == '\n' {
 						i++
 					}
 				} else {
-					if l.l == 0 && data[i] == ' ' {
-						l.x++ // trim leading spaces
-					} else {
-						if data[i] == ' ' {
-							trailingSpaces++
-						} else {
-							for j := 0; j < trailingSpaces; j++ {
-								l.columns = append(l.columns, ' ')
-							}
-							l.l += trailingSpaces + 1
-							trailingSpaces = 0
-							l.columns = append(l.columns, int(data[i]))
-						}
-					}
+					f.Set(x, y, int(data[i]))
+					x++
 				}
 			}
 		}
 	}
-	return f, nil
+	if f.x == 0 && f.lx == 1 && f.lines[0].columns[0] == '>' {
+		return nil, newDecodeError("No instruction on the first line of the file produces an unusable program in Befunge98")
+	}
+	return &f, nil
 }
