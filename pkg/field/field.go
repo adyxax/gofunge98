@@ -36,13 +36,19 @@ func Load(fd io.Reader) (*Field, error) {
 		data := make([]byte, 4096)
 		if n, errRead := fd.Read(data); errRead != nil {
 			if errRead == io.EOF {
-				if f.ly == 0 && l.l == 0 {
-					return nil, newDecodeError("No instruction on the first line of the file produces an unusable program in Befunge98")
+				if f.ly == 0 {
+					if l.l == 0 {
+						return nil, newDecodeError("No instruction on the first line of the file produces an unusable program in Befunge98")
+					}
+					f.x = l.x
 				}
 				if l.l > 0 {
 					f.ly++
-					if f.lx-f.x < l.l-l.x {
-						f.lx = l.l - l.x + f.x
+					if f.x < l.x {
+						f.x = l.x
+					}
+					if f.lx < l.l+l.x-f.x {
+						f.lx = l.l + l.x - f.x
 					}
 					f.lines = append(f.lines, *l)
 				}
@@ -56,12 +62,18 @@ func Load(fd io.Reader) (*Field, error) {
 					continue
 				}
 				if data[i] == '\n' || data[i] == '\r' {
-					if f.ly == 0 && l.l == 0 {
-						return nil, newDecodeError("No instruction on the first line of the file produces an unusable program in Befunge98")
+					if f.ly == 0 {
+						if l.l == 0 {
+							return nil, newDecodeError("No instruction on the first line of the file produces an unusable program in Befunge98")
+						}
+						f.x = l.x
 					}
 					f.ly++
-					if f.lx < l.l {
-						f.lx = l.l
+					if f.x > l.x {
+						f.x = l.x
+					}
+					if f.lx < l.l+l.x-f.x {
+						f.lx = l.l + l.x - f.x
 					}
 					f.lines = append(f.lines, *l)
 					l = new(Line)

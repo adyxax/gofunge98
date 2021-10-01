@@ -38,6 +38,21 @@ func TestLoad(t *testing.T) {
 			},
 		},
 	}
+	// hello2 b98 file
+	hello2Field := Field{
+		x:  1,
+		y:  0,
+		lx: 33,
+		ly: 2,
+		lines: []Line{
+			Line{x: 33, l: 1, columns: []int{'v'}},
+			Line{
+				x:       1,
+				l:       33,
+				columns: []int{'@', ' ', '>', ' ', '#', ';', '>', ':', '#', ',', '_', 'e', '-', 'j', ';', ' ', '"', 'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!', '"', 'd', 'a', '<'},
+			},
+		},
+	}
 	// factorial b98 file
 	factorialField := Field{
 		x:  0,
@@ -134,6 +149,7 @@ func TestLoad(t *testing.T) {
 		{"io error", "test_data/minimal.b98", iotest.TimeoutReader, nil, &ReadError{}},
 		{"minimal", "test_data/minimal.b98", nil, &minimalField, nil},
 		{"hello", "test_data/hello.b98", nil, &helloField, nil},
+		{"hello2", "test_data/hello2.b98", nil, &hello2Field, nil},
 		{"factorial", "test_data/factorial.b98", nil, &factorialField, nil},
 		{"dna", "test_data/dna.b98", nil, &dnaField, nil},
 		{"\\r\\n file", "test_data/rn.b98", nil, &rnField, nil},
