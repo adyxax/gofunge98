@@ -86,6 +86,9 @@ func (f *Field) Blank(x, y int) {
 	f.x = f.lines[0].x
 	x2 := f.lines[0].l + f.lines[0].x
 	for i := 1; i < f.ly; i++ {
+		if f.lines[i].l == 0 {
+			continue
+		}
 		if f.x > f.lines[i].x {
 			f.x = f.lines[i].x
 		}

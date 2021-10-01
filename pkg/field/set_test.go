@@ -237,6 +237,13 @@ func TestSetAppendResize(t *testing.T) {
 			Line{x: 0, l: 1, columns: []int{'d'}},
 		},
 	}
+	blank := Field{
+		x: 0, y: -1, lx: 2, ly: 3, lines: []Line{
+			Line{x: 0, l: 1, columns: []int{'u'}},
+			Line{x: 0, l: 2, columns: []int{'0', 'r'}},
+			Line{x: 0, l: 1, columns: []int{'d'}},
+		},
+	}
 	xappend := Field{
 		x: -1, y: -1, lx: 5, ly: 3, lines: []Line{
 			Line{x: 0, l: 1, columns: []int{'u'}},
@@ -287,6 +294,24 @@ func TestSetAppendResize(t *testing.T) {
 			Line{x: 3, l: 1, columns: []int{'n'}},
 		},
 	}
+	xappendyappendEp := Field{
+		x: -5, y: -1, lx: 9, ly: 5, lines: []Line{
+			Line{x: 0, l: 1, columns: []int{'u'}},
+			Line{x: -1, l: 3, columns: []int{'l', '0', 'r'}},
+			Line{x: 0, l: 1, columns: []int{'d'}},
+			Line{x: -5, l: 1, columns: []int{'e'}},
+			Line{x: 3, l: 1, columns: []int{'n'}},
+		},
+	}
+	xappendyappendEa := Field{
+		x: -1, y: -1, lx: 7, ly: 5, lines: []Line{
+			Line{x: 0, l: 1, columns: []int{'u'}},
+			Line{x: -1, l: 3, columns: []int{'l', '0', 'r'}},
+			Line{x: 0, l: 1, columns: []int{'d'}},
+			Line{x: 5, l: 1, columns: []int{'e'}},
+			Line{x: 3, l: 1, columns: []int{'n'}},
+		},
+	}
 	// Test cases
 	testCases := []struct {
 		name     string
@@ -296,12 +321,15 @@ func TestSetAppendResize(t *testing.T) {
 		inputV   int
 		expected Field
 	}{
+		{"blank", base, -1, 0, ' ', blank},
 		{"xappend", base, 3, 1, 'n', xappend},
 		{"xprepend", base, -3, 1, 'n', xprepend},
 		{"xprependyprepend", base, -3, -3, 'n', xprependyprepend},
 		{"xappendyprepend", base, 3, -3, 'n', xappendyprepend},
 		{"xprependyappend", base, -3, 3, 'n', xprependyappend},
 		{"xappendyappend", base, 3, 3, 'n', xappendyappend},
+		{"xappendyappendEp", xappendyappend, -5, 2, 'e', xappendyappendEp},
+		{"xappendyappendEa", xappendyappend, 5, 2, 'e', xappendyappendEa},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

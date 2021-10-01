@@ -13,6 +13,13 @@ func (f *Field) Set(x, y, v int) {
 				l.x = x
 				l.l = 1
 				l.columns = append(l.columns, v)
+				if f.x > x {
+					f.lx = f.lx + f.x - x
+					f.x = x
+				}
+				if f.lx < x-f.x+1 {
+					f.lx = x - f.x + 1
+				}
 			} else if x >= l.x {
 				if x < l.x+l.l {
 					// just set the value

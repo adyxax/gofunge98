@@ -45,13 +45,13 @@ func TestBlankInside(t *testing.T) {
 
 func TestBlankInsideLine(t *testing.T) {
 	input := Field{
-		x:  0,
+		x:  -5,
 		y:  0,
-		lx: 3,
+		lx: 8,
 		ly: 3,
 		lines: []Line{
 			Line{x: 0, l: 3, columns: []int{'@', 'a', 'b'}},
-			Line{x: 0, l: 1, columns: []int{'d'}},
+			Line{x: -5, l: 1, columns: []int{'d'}},
 			Line{x: 0, l: 1, columns: []int{'c'}},
 		},
 	}
@@ -62,7 +62,7 @@ func TestBlankInsideLine(t *testing.T) {
 		ly: 3,
 		lines: []Line{
 			Line{x: 0, l: 3, columns: []int{'@', 'a', 'b'}},
-			Line{columns: []int{}},
+			Line{x: -5, columns: []int{}},
 			Line{x: 0, l: 1, columns: []int{'c'}},
 		},
 	}
@@ -74,7 +74,7 @@ func TestBlankInsideLine(t *testing.T) {
 		inputY   int
 		expected *Field
 	}{
-		{"inside", &input, 0, 1, &expected},
+		{"inside", &input, -5, 1, &expected},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
