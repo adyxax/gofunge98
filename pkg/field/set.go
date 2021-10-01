@@ -25,8 +25,8 @@ func (f *Field) Set(x, y, v int) {
 					}
 					l.columns = append(l.columns, v)
 					l.l = newL
-					if f.lx-f.x < l.l-l.x {
-						f.lx = l.l - l.x
+					if f.lx < l.l+l.x-f.x {
+						f.lx = l.l + l.x - f.x
 					}
 				}
 			} else {
@@ -60,8 +60,8 @@ func (f *Field) Set(x, y, v int) {
 				f.lx = f.lx + f.x - x
 				f.x = x
 			}
-			if f.lx-f.x < x {
-				f.lx = x - f.x
+			if f.lx < x-f.x+1 {
+				f.lx = x - f.x + 1
 			}
 		}
 	} else {
@@ -79,7 +79,7 @@ func (f *Field) Set(x, y, v int) {
 			f.lx = f.lx + f.x - x
 			f.x = x
 		}
-		if f.lx-f.x < x {
+		if f.lx < x-f.x+1 {
 			f.lx = x - f.x + 1
 		}
 	}

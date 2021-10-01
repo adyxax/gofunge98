@@ -87,7 +87,7 @@ func TestSetMinimalAppendTwo(t *testing.T) {
 	bottomRight := Field{
 		x:  0,
 		y:  0,
-		lx: 5,
+		lx: 6,
 		ly: 3,
 		lines: []Line{
 			Line{x: 0, l: 1, columns: []int{'@'}},
@@ -224,6 +224,91 @@ func TestSetMinimalAppendThree(t *testing.T) {
 			field, err := Load(file)
 			field.Set(tc.inputX, tc.inputY, tc.inputV)
 			require.NoError(t, err)
+			require.Equal(t, tc.expected, field, "Invalid value")
+		})
+	}
+}
+
+func TestSetAppendResize(t *testing.T) {
+	base := Field{
+		x: -1, y: -1, lx: 3, ly: 3, lines: []Line{
+			Line{x: 0, l: 1, columns: []int{'u'}},
+			Line{x: -1, l: 3, columns: []int{'l', '0', 'r'}},
+			Line{x: 0, l: 1, columns: []int{'d'}},
+		},
+	}
+	xappend := Field{
+		x: -1, y: -1, lx: 5, ly: 3, lines: []Line{
+			Line{x: 0, l: 1, columns: []int{'u'}},
+			Line{x: -1, l: 3, columns: []int{'l', '0', 'r'}},
+			Line{x: 0, l: 4, columns: []int{'d', ' ', ' ', 'n'}},
+		},
+	}
+	xprepend := Field{
+		x: -3, y: -1, lx: 5, ly: 3, lines: []Line{
+			Line{x: 0, l: 1, columns: []int{'u'}},
+			Line{x: -1, l: 3, columns: []int{'l', '0', 'r'}},
+			Line{x: -3, l: 4, columns: []int{'n', ' ', ' ', 'd'}},
+		},
+	}
+	xprependyprepend := Field{
+		x: -3, y: -3, lx: 5, ly: 5, lines: []Line{
+			Line{x: -3, l: 1, columns: []int{'n'}},
+			Line{},
+			Line{x: 0, l: 1, columns: []int{'u'}},
+			Line{x: -1, l: 3, columns: []int{'l', '0', 'r'}},
+			Line{x: 0, l: 1, columns: []int{'d'}},
+		},
+	}
+	xappendyprepend := Field{
+		x: -1, y: -3, lx: 5, ly: 5, lines: []Line{
+			Line{x: 3, l: 1, columns: []int{'n'}},
+			Line{},
+			Line{x: 0, l: 1, columns: []int{'u'}},
+			Line{x: -1, l: 3, columns: []int{'l', '0', 'r'}},
+			Line{x: 0, l: 1, columns: []int{'d'}},
+		},
+	}
+	xprependyappend := Field{
+		x: -3, y: -1, lx: 5, ly: 5, lines: []Line{
+			Line{x: 0, l: 1, columns: []int{'u'}},
+			Line{x: -1, l: 3, columns: []int{'l', '0', 'r'}},
+			Line{x: 0, l: 1, columns: []int{'d'}},
+			Line{},
+			Line{x: -3, l: 1, columns: []int{'n'}},
+		},
+	}
+	xappendyappend := Field{
+		x: -1, y: -1, lx: 5, ly: 5, lines: []Line{
+			Line{x: 0, l: 1, columns: []int{'u'}},
+			Line{x: -1, l: 3, columns: []int{'l', '0', 'r'}},
+			Line{x: 0, l: 1, columns: []int{'d'}},
+			Line{},
+			Line{x: 3, l: 1, columns: []int{'n'}},
+		},
+	}
+	// Test cases
+	testCases := []struct {
+		name     string
+		input    Field
+		inputX   int
+		inputY   int
+		inputV   int
+		expected Field
+	}{
+		{"xappend", base, 3, 1, 'n', xappend},
+		{"xprepend", base, -3, 1, 'n', xprepend},
+		{"xprependyprepend", base, -3, -3, 'n', xprependyprepend},
+		{"xappendyprepend", base, 3, -3, 'n', xappendyprepend},
+		{"xprependyappend", base, -3, 3, 'n', xprependyappend},
+		{"xappendyappend", base, 3, 3, 'n', xappendyappend},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			field := tc.input
+			field.lines = make([]Line, field.ly)
+			copy(field.lines, tc.input.lines)
+			field.Set(tc.inputX, tc.inputY, tc.inputV)
 			require.Equal(t, tc.expected, field, "Invalid value")
 		})
 	}
