@@ -21,7 +21,6 @@ func (p *Pointer) Exec(f *field.Field) (done bool, returnValue *int) {
 		}
 		if c == '"' {
 			p.stringMode = false
-			p.lastCharWasSpace = false
 		} else {
 			if c == ' ' {
 				p.lastCharWasSpace = true
@@ -65,27 +64,19 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 		v := p.ss.head.Pop()
 		return true, &v
 	case 'k':
+		x, y := p.x, p.y
 		n := p.ss.head.Pop()
 		c = p.StepAndGet(*f)
-		steps := 1
 		for jumpingMode := false; jumpingMode || c == ' ' || c == ';'; c = p.StepAndGet(*f) {
-			steps += 1
 			if c == ';' {
 				jumpingMode = !jumpingMode
 			}
 		}
 		if n > 0 {
-			// we need to reverse that step
-			p.Reverse()
-			for i := 0; i < steps; i++ {
-				p.Step(*f)
-			}
-			p.Reverse()
+			p.x, p.y = x, y
 			if c != ' ' && c != ';' {
-				if n > 0 {
-					for i := 0; i < n; i++ {
-						p.eval(c, f)
-					}
+				for i := 0; i < n; i++ {
+					p.eval(c, f)
 				}
 			}
 		}

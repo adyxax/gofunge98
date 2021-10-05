@@ -99,9 +99,8 @@ func (p *Pointer) Redirect(c int) bool {
 	case 'r':
 		p.Reverse()
 	case 'x':
-		dy := p.ss.head.Pop()
-		dx := p.ss.head.Pop()
-		p.RedirectTo(dx, dy)
+		p.dy = p.ss.head.Pop()
+		p.dx = p.ss.head.Pop()
 	default:
 		return false
 	}

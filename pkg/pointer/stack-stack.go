@@ -80,7 +80,7 @@ func (ss *StackStack) End(p *Pointer) (reflect bool) {
 		}
 	}
 	ss.height--
-	ss.head = ss.head.next
+	ss.head = soss
 	return false
 }
 
