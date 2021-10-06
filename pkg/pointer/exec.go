@@ -75,6 +75,9 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 		if n > 0 {
 			p.x, p.y = x, y
 			if c != ' ' && c != ';' {
+				if c == 'q' || c == '@' {
+					return p.eval(c, f)
+				}
 				for i := 0; i < n; i++ {
 					p.eval(c, f)
 				}
