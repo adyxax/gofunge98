@@ -84,13 +84,11 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 			}
 		}
 	case '!':
-		v := p.ss.head.Pop()
-		if v == 0 {
-			v = 1
+		if p.ss.head.Pop() == 0 {
+			p.ss.head.Push(1)
 		} else {
-			v = 0
+			p.ss.head.Push(0)
 		}
-		p.ss.head.Push(v)
 	case '`':
 		b, a := p.ss.head.Pop(), p.ss.head.Pop()
 		if a > b {
@@ -100,12 +98,12 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 		}
 		p.ss.head.Push(a)
 	case '_':
-		v := p.ss.head.Pop()
-		if v == 0 {
-			p.Redirect('>')
+		if p.ss.head.Pop() == 0 {
+			p.dx = 1
 		} else {
-			p.Redirect('<')
+			p.dx = -1
 		}
+		p.dy = 0
 	case '|':
 		v := p.ss.head.Pop()
 		if v == 0 {
@@ -133,16 +131,16 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 		b, a := p.ss.head.Pop(), p.ss.head.Pop()
 		if b == 0 {
 			p.ss.head.Push(0)
-			return
+		} else {
+			p.ss.head.Push(a / b)
 		}
-		p.ss.head.Push(a / b)
 	case '%':
 		b, a := p.ss.head.Pop(), p.ss.head.Pop()
 		if b == 0 {
 			p.ss.head.Push(0)
-			return
+		} else {
+			p.ss.head.Push(a % b)
 		}
-		p.ss.head.Push(a % b)
 	case '"':
 		p.stringMode = true
 	case '\'':
