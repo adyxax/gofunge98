@@ -5,15 +5,16 @@ import (
 	"testing"
 
 	"git.adyxax.org/adyxax/gofunge98/pkg/field"
+	"git.adyxax.org/adyxax/gofunge98/pkg/stack"
 	"github.com/stretchr/testify/require"
 )
 
 func TestBegin(t *testing.T) {
 	t.Run("empty", func(t *testing.T) {
 		expected := NewStackStack()
-		expected.head = &Stack{data: make([]int, 0), next: expected.head}
-		expected.head.next.Push(0)
-		expected.head.next.Push(0)
+		expected.head = stack.NewStack(0, expected.head)
+		expected.head.Next().Push(0)
+		expected.head.Next().Push(0)
 		expected.height++
 		p := NewPointer()
 		ss := p.ss
@@ -23,9 +24,9 @@ func TestBegin(t *testing.T) {
 		require.Equal(t, 1, x)
 		require.Equal(t, 0, y)
 		// Let's push another one
-		expected.head = &Stack{data: make([]int, 0), next: expected.head}
-		expected.head.next.Push(1)
-		expected.head.next.Push(0)
+		expected.head = stack.NewStack(0, expected.head)
+		expected.head.Next().Push(1)
+		expected.head.Next().Push(0)
 		expected.height++
 		ss.Begin(p)
 		require.Equal(t, expected, ss)
@@ -35,14 +36,14 @@ func TestBegin(t *testing.T) {
 	})
 	t.Run("negative", func(t *testing.T) {
 		expected := NewStackStack()
-		expected.head = &Stack{size: 5, height: 0, data: make([]int, 5), next: expected.head}
-		expected.head.next.Push(0)
-		expected.head.next.Push(0)
-		expected.head.next.Push(0)
-		expected.head.next.Push(0)
-		expected.head.next.Push(0)
-		expected.head.next.Push(0)
-		expected.head.next.Push(0)
+		expected.head = stack.NewStack(5, expected.head)
+		expected.head.Next().Push(0)
+		expected.head.Next().Push(0)
+		expected.head.Next().Push(0)
+		expected.head.Next().Push(0)
+		expected.head.Next().Push(0)
+		expected.head.Next().Push(0)
+		expected.head.Next().Push(0)
 		expected.height++
 		p := NewPointer()
 		file, err := os.Open("../field/test_data/hello.b98")
@@ -59,10 +60,13 @@ func TestBegin(t *testing.T) {
 	})
 	t.Run("ask to copy more than we have", func(t *testing.T) {
 		expected := NewStackStack()
-		expected.head = &Stack{size: 34, height: 34, data: make([]int, 34), next: expected.head}
-		expected.head.data[33] = 18
-		expected.head.next.Push(2)
-		expected.head.next.Push(3)
+		expected.head = stack.NewStack(34, expected.head)
+		for i := 0; i < 33; i++ {
+			expected.head.Push(0)
+		}
+		expected.head.Push(18)
+		expected.head.Next().Push(2)
+		expected.head.Next().Push(3)
 		expected.height++
 		p := NewPointer()
 		p.SetStorageOffset(2, 3)
@@ -81,16 +85,20 @@ func TestBegin(t *testing.T) {
 	})
 	t.Run("normal", func(t *testing.T) {
 		expected := NewStackStack()
-		expected.head = &Stack{size: 4, height: 4, data: []int{12, 14, -2, 5}, next: expected.head}
-		expected.head.next.Push(7)
-		expected.head.next.Push(36)
-		expected.head.next.Push(42)
-		expected.head.next.Push(-2)
-		expected.head.next.Push(5)
-		expected.head.next.Push(4)
-		expected.head.next.Pop()
-		expected.head.next.Pop()
-		expected.head.next.Pop()
+		expected.head = stack.NewStack(4, expected.head)
+		expected.head.Push(12)
+		expected.head.Push(14)
+		expected.head.Push(-2)
+		expected.head.Push(5)
+		expected.head.Next().Push(7)
+		expected.head.Next().Push(36)
+		expected.head.Next().Push(42)
+		expected.head.Next().Push(-2)
+		expected.head.Next().Push(5)
+		expected.head.Next().Push(4)
+		expected.head.Next().Pop()
+		expected.head.Next().Pop()
+		expected.head.Next().Pop()
 		expected.height++
 		p := NewPointer()
 		p.SetStorageOffset(36, 42)
@@ -162,8 +170,6 @@ func TestEnd(t *testing.T) {
 	})
 	t.Run("transfert", func(t *testing.T) {
 		expected := NewStackStack()
-		expected.head.size = 5
-		expected.head.data = make([]int, 5)
 		expected.head.Push(7)
 		expected.head.Push(12)
 		expected.head.Push(14)
@@ -171,8 +177,6 @@ func TestEnd(t *testing.T) {
 		expected.head.Push(5)
 		p := NewPointer()
 		ss := p.ss
-		ss.head.size = 4
-		ss.head.data = make([]int, 4)
 		ss.head.Push(7)
 		ss.head.Push(0)
 		ss.Begin(p)
@@ -211,9 +215,9 @@ func TestUnder(t *testing.T) {
 		expected.head.Push(0)
 		expected.head.Push(0)
 		expected.head.Push(6)
-		expected.head.next.Pop()
-		expected.head.next.Pop()
-		expected.head.next.Pop()
+		expected.head.Next().Pop()
+		expected.head.Next().Pop()
+		expected.head.Next().Pop()
 		p := NewPointer()
 		ss := p.ss
 		ss.head.Push(1)
@@ -231,9 +235,9 @@ func TestUnder(t *testing.T) {
 		pe := NewPointer()
 		expected := NewStackStack()
 		expected.Begin(pe)
-		expected.head.next.Push(12)
-		expected.head.next.Push(5)
-		expected.head.next.Push(8)
+		expected.head.Next().Push(12)
+		expected.head.Next().Push(5)
+		expected.head.Next().Push(8)
 		expected.head.Push(8)
 		expected.head.Push(5)
 		expected.head.Push(12)

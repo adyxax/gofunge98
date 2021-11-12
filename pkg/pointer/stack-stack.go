@@ -1,13 +1,15 @@
 package pointer
 
+import "git.adyxax.org/adyxax/gofunge98/pkg/stack"
+
 type StackStack struct {
-	head   *Stack
+	head   *stack.Stack
 	height int
 }
 
 func NewStackStack() *StackStack {
 	return &StackStack{
-		head:   NewStack(),
+		head:   stack.NewStack(32, nil),
 		height: 1,
 	}
 }
@@ -20,24 +22,10 @@ func (ss *StackStack) Begin(p *Pointer) {
 	if np < 0 {
 		np = -np
 	}
-	toss := &Stack{
-		size: np,
-		data: make([]int, np),
-		next: soss,
-	}
+	toss := stack.NewStack(np, soss)
 	ss.head = toss
 	if n > 0 {
-		toss.height = n
-		elts := soss.height - n
-		if elts < 0 {
-			elts = soss.height
-		} else {
-			elts = n
-		}
-		for i := 1; i <= elts; i++ {
-			toss.data[toss.height-i] = soss.data[soss.height-i]
-		}
-		soss.height -= elts
+		toss.Transfert(soss, n)
 	} else if n < 0 {
 		for i := 0; i < np; i++ {
 			soss.Push(0)
@@ -53,31 +41,16 @@ func (ss *StackStack) End(p *Pointer) (reflect bool) {
 	if ss.height == 1 {
 		return true
 	}
-	soss := ss.head.next
+	toss := ss.head
+	soss := ss.head.Next()
 	n := ss.head.Pop()
 	y := soss.Pop()
 	x := soss.Pop()
 	p.SetStorageOffset(x, y)
 	if n > 0 {
-		if n > ss.head.height {
-			for i := n; i > ss.head.height; i-- {
-				soss.Push(0)
-			}
-			n = ss.head.height
-		}
-		soss.height += n
-		if soss.size < soss.height {
-			soss.data = append(soss.data, make([]int, soss.height-soss.size)...)
-			soss.size = soss.height
-		}
-		for i := n; i > 0; i-- {
-			soss.data[soss.height-i] = ss.head.data[ss.head.height-i]
-		}
+		soss.Transfert(toss, n)
 	} else if n < 0 {
-		soss.height += n
-		if soss.height < 0 {
-			soss.height = 0
-		}
+		soss.Discard(-n)
 	}
 	ss.height--
 	ss.head = soss
@@ -91,12 +64,16 @@ func (ss *StackStack) Under() (reflect bool) {
 	n := ss.head.Pop()
 	if n > 0 {
 		for i := 0; i < n; i++ {
-			ss.head.Push(ss.head.next.Pop())
+			ss.head.Push(ss.head.Next().Pop())
 		}
 	} else {
 		for i := 0; i < -n; i++ {
-			ss.head.next.Push(ss.head.Pop())
+			ss.head.Next().Push(ss.head.Pop())
 		}
 	}
 	return false
+}
+
+func (s StackStack) GetHeights() []int {
+	return s.head.GetHeights()
 }

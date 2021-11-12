@@ -185,12 +185,7 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 		now := time.Now()
 		x, y, lx, ly := f.Dump()
 		const uintSize = 32 << (^uint(0) >> 32 & 1) // 32 or 64
-		heights := make([]int, p.ss.height)
-		s := p.ss.head
-		for i := p.ss.height - 1; i >= 0; i-- {
-			heights[i] = s.height
-			s = s.next
-		}
+		heights := p.ss.GetHeights()
 		// 20
 		for _, e := range os.Environ() {
 			vars := strings.SplitN(e, "=", 2)
@@ -255,14 +250,7 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 		// 1
 		p.ss.head.Push(0b00000) // TODO update when implementing t, i, o and =
 		if n > 0 {
-			if n > p.ss.head.height {
-				p.ss.head.height = 1
-				p.ss.head.data[0] = 0
-			} else {
-				v := p.ss.head.data[p.ss.head.height-n]
-				p.ss.head.height = heights[0]
-				p.ss.head.Push(v)
-			}
+			p.ss.YCommandPick(n, heights[0])
 		}
 	case '(':
 		n := p.ss.head.Pop()

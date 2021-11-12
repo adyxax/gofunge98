@@ -1,4 +1,4 @@
-package pointer
+package stack
 
 import (
 	"testing"
@@ -7,15 +7,15 @@ import (
 )
 
 func TestClear(t *testing.T) {
-	s := NewStack()
+	s := NewStack(32, nil)
 	s.Clear()
 	require.Equal(t, 0, s.height)
 }
 
 func TestDupicate(t *testing.T) {
-	expected := NewStack()
+	expected := NewStack(32, nil)
 	expected.height = 2
-	s := NewStack()
+	s := NewStack(32, nil)
 	s.Duplicate()
 	require.Equal(t, expected.height, s.height)
 	s.Push(12)
@@ -27,7 +27,7 @@ func TestDupicate(t *testing.T) {
 }
 
 func TestPop(t *testing.T) {
-	s := NewStack()
+	s := NewStack(32, nil)
 	v := s.Pop()
 	require.Equal(t, 0, v)
 	s.Push(12)
@@ -41,7 +41,7 @@ func TestPop(t *testing.T) {
 }
 
 func TestPush(t *testing.T) {
-	s := NewStack()
+	s := NewStack(32, nil)
 	for i := 0; i < 32; i++ {
 		s.Push(i)
 	}
@@ -51,8 +51,8 @@ func TestPush(t *testing.T) {
 }
 
 func TestSwap(t *testing.T) {
-	s := NewStack()
-	s2 := NewStack()
+	s := NewStack(32, nil)
+	s2 := NewStack(32, nil)
 	s.Swap()
 	s2.Push(0)
 	s2.Push(0)
@@ -72,4 +72,12 @@ func TestSwap(t *testing.T) {
 	s2.Push(1)
 	s.Swap()
 	require.Equal(t, s2, s)
+}
+
+func TestHeights(t *testing.T) {
+	// TODO
+}
+
+func TestTransfert(t *testing.T) {
+	// TODO
 }
