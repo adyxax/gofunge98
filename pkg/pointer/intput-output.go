@@ -5,6 +5,9 @@ import (
 	"os"
 )
 
+// We keep the last input char to handle a pain point in the funge-98 spec :
+// when reading from the decimal input you need to read until you encounter a
+// non numeric char, but not drop it
 var defaultInputLastChar *int = nil
 
 func DefaultCharacterInput() (int, error) {
