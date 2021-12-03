@@ -22,14 +22,14 @@ go is required. Only go version >= 1.17 on linux amd64 (Gentoo) is being regular
 ## Quick Install
 
 ```
-go install git.adyxax.org/adyxax/gofunge98/cmd/headless_interpreter@latest
+go install git.adyxax.org/adyxax/gofunge98/cmd/gofunge98@latest
 ```
 
 ## Usage
 
-Launching the headless_interpreter is as simple as :
+Launching the gofunge98 is as simple as :
 ```
-headless_interpreter -f something.b98
+gofunge98 -f something.b98
 ```
 
 The interpreter will then load and execute the specified Funge-98 program until the program normally terminates or is interrupted or killed.
@@ -43,10 +43,10 @@ go test -cover ./...
 
 For a debug build, use :
 ```
-go build ./cmd/headless_interpreter/
+go build ./cmd/gofunge98/
 ```
 
 For a release build, use :
 ```
-go build -ldflags '-s -w -extldflags "-static"' ./cmd/headless_interpreter/
+go build -ldflags '-s -w -extldflags "-static"' ./cmd/gofunge98/
 ```
