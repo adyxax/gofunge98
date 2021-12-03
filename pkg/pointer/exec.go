@@ -177,9 +177,17 @@ func (p *Pointer) eval(c int, f *field.Field) (done bool, returnValue *int) {
 	case ',':
 		p.CharacterOutput(p.ss.head.Pop())
 	case '&':
-		p.ss.head.Push(p.DecimalInput())
+		if v, err := p.DecimalInput(); err != nil {
+			p.Reverse()
+		} else {
+			p.ss.head.Push(v)
+		}
 	case '~':
-		p.ss.head.Push(p.CharacterInput())
+		if v, err := p.CharacterInput(); err != nil {
+			p.Reverse()
+		} else {
+			p.ss.head.Push(v)
+		}
 	case 'y':
 		n := p.ss.head.Pop()
 		now := time.Now()

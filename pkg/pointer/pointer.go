@@ -9,7 +9,7 @@ import (
 
 var myRand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
-type InputFunction func() int
+type InputFunction func() (int, error)
 type OutputFunction func(v int)
 
 type Pointer struct {
