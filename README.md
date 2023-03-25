@@ -17,7 +17,7 @@ Current limitations are :
 
 ## Dependencies
 
-go is required. Only go version >= 1.17 on linux amd64 (Gentoo) is being regularly tested.
+go is required. Only go version >= 1.20 on linux amd64 (Gentoo) is being regularly tested.
 
 ## Quick Install
 
