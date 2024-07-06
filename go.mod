@@ -1,6 +1,6 @@
 module git.adyxax.org/adyxax/gofunge98
 
-go 1.22.2
+go 1.22.5
 
 require github.com/stretchr/testify v1.9.0
 
